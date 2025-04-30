@@ -1,19 +1,19 @@
 import ProductCard from "@/components/ProductCard";
 import { fetchAllFilteredProducts } from "@/redux/slices/productSlice";
+import { setKeyword } from "@/redux/slices/searchSlice";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const ProductsPage = () => {
   const dispatch = useDispatch();
+  const { keyword } = useSelector((state) => state.search);
   const { productsList } = useSelector((state) => state.products);
-  const { searchText } = useSelector((state) => state.header);
 
-  console.log({ productsList, searchText });
+  console.log("product page => ", { keyword });
 
   useEffect(() => {
-    console.log(searchText);
-    dispatch(fetchAllFilteredProducts(searchText));
-  }, [dispatch, searchText]);
+    dispatch(fetchAllFilteredProducts(keyword));
+  }, [dispatch, keyword]);
 
   return (
     <div className="p-3">

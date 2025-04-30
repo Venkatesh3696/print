@@ -46,7 +46,7 @@ const CartDialog = () => {
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-col">
-          {cartItems.map((item, i) => (
+          {cartItems?.map((item, i) => (
             <CartItem key={i} item={item} />
           ))}
         </div>

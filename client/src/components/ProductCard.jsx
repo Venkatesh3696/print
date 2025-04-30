@@ -10,7 +10,7 @@ const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   return (
     <Card
-      className="flex justify-between h-100 bg-white rounded-lg shadow-md p-2 snap-center cursor-pointer transition-transform duration-300 hover:scale-105 w-full gap -4 flex-shrink-0"
+      className="flex justify-between max-w-80 h-100 bg-white rounded-lg shadow-md p-2 snap-center cursor-pointer transition-transform duration-300 hover:scale-105 w-full gap -4 flex-shrink-0"
       onClick={() => navigate(`/product/${product._id}`)}
     >
       <img alt={product.name} src={product?.image} className="h-50" />

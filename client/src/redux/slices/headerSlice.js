@@ -14,11 +14,8 @@ const dialogSlice = createSlice({
     closeCart: (state) => {
       state.isCartOpen = false;
     },
-    setSearchText: (state, action) => {
-      state.searchText = action.payload;
-    },
   },
 });
 
-export const { openCart, closeCart, setSearchText } = dialogSlice.actions;
+export const { openCart, closeCart } = dialogSlice.actions;
 export default dialogSlice.reducer;

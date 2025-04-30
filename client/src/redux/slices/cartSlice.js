@@ -47,8 +47,8 @@ const cartSlice = createSlice({
       })
       .addCase(getCart.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("in slice", action.payload[0].items);
-        state.cartItems = action.payload[0].items;
+        console.log("in slice", action?.payload[0]?.items);
+        state.cartItems = action?.payload[0]?.items;
       })
       .addCase(getCart.rejected, (state) => {
         state.loading = true;

@@ -12,7 +12,7 @@ export const fetchAllFilteredProducts = createAsyncThunk(
   async (searchTerm) => {
     console.log({ searchTerm });
     try {
-      const { data } = await API.get(`/api/products/${searchTerm}`);
+      const { data } = await API.get(`/api/products?search=${searchTerm}`);
 
       return data;
     } catch (error) {
