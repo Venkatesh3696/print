@@ -8,7 +8,7 @@ const CartItem = ({ item }) => {
       <img src={item?.product?.image} alt="cart item" className="w-30 h-30" />
       <div className="pl-3">
         <h1 className="text-lg">{item?.product?.name} </h1>
-        <p className="text-sm">{item?.product?.description.slice(0, 50)} </p>
+        <p className="text-sm">{item?.product?.description?.slice(0, 50)} </p>
         <h1 className="text-sm">
           <span>₹ {item?.product?.price}</span>
         </h1>

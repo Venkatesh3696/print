@@ -53,11 +53,7 @@ const Header = () => {
     <header className="shadow-md shadow-gray-500 py-4">
       <div className="md:mx-16 flex justify-between items-center ">
         <NavLink to={"/"}>
-          <img
-            src="/public/PRINTMINE_FINAL_LOGO_1.avif"
-            alt="logo"
-            className="w-40"
-          />
+          <img src="/PRINTMINE_FINAL_LOGO_1.avif" alt="logo" className="w-40" />
         </NavLink>
         <div className=" justify-between items-center gap-4 hidden md:flex ">
           {categories.map((category) => (

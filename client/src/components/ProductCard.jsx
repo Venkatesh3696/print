@@ -2,12 +2,15 @@ import React from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <Card
-      className="flex justify-between h-100 bg-white rounded-lg shadow-md p-2 snap-center cursor-pointer transition-transform duration-300 hover:scale-105 w-64 flex-shrink-0"
+      className="flex justify-between h-100 bg-white rounded-lg shadow-md p-2 snap-center cursor-pointer transition-transform duration-300 hover:scale-105 w-full gap -4 flex-shrink-0"
       onClick={() => navigate(`/product/${product._id}`)}
     >
       <img alt={product.name} src={product?.image} className="h-50" />
@@ -18,7 +21,21 @@ const ProductCard = ({ product }) => {
           ₹ {product.price}
         </span>
       </div>
-      <Button>Add to cart</Button>
+      <Button
+        className="cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation();
+          dispatch(
+            addToCart({
+              product: product._id,
+              quantity: 1,
+              price: product.price,
+            })
+          );
+        }}
+      >
+        Add to cart
+      </Button>
     </Card>
   );
 };

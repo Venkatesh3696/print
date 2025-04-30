@@ -9,10 +9,10 @@ const initialState = {
 
 export const fetchAllFilteredProducts = createAsyncThunk(
   "products/fetchallfilteredproducts",
-  async ({ searchTerm }) => {
+  async (searchTerm) => {
     console.log({ searchTerm });
     try {
-      const { data } = await API.get(`/api/products/`);
+      const { data } = await API.get(`/api/products/${searchTerm}`);
 
       return data;
     } catch (error) {

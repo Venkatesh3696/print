@@ -5,20 +5,23 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ProductsPage = () => {
   const dispatch = useDispatch();
-  const { searchTerm } = useSelector((state) => state.header);
   const { productsList } = useSelector((state) => state.products);
+  const { searchText } = useSelector((state) => state.header);
 
-  console.log({ productsList });
+  console.log({ productsList, searchText });
+
+  useEffect(() => {
+    console.log(searchText);
+    dispatch(fetchAllFilteredProducts(searchText));
+  }, [dispatch, searchText]);
 
   return (
-    <div>
-      <div>
-        <h1>Products</h1>
-        <div className="w-full flex ">
-          {productsList.map((product) => (
-            <ProductCard key={product?._id} product={product} />
-          ))}
-        </div>
+    <div className="p-3">
+      <h1 className="font-bold text-3xl mb-4">Products</h1>
+      <div className="w-full  gap-3 grid grid-cols-4 ">
+        {productsList?.map((product) => (
+          <ProductCard key={product?._id} product={product} />
+        ))}
       </div>
     </div>
   );

@@ -4,11 +4,20 @@ import { uploadImage } from "../utils/cloudinary.js";
 
 export const getProducts = async (req, res) => {
   console.log("gettting products");
+  console.log(req.query);
+  const filter = {};
+  const { search } = req.query || "";
+  if (search) {
+    filter.$text = { $search: search };
+  }
+
   try {
-    const products = await Product.find({});
+    const products = await Product.find(filter);
     res.status(200).json(products);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server error" });
+    console.log(error);
   }
 };
 
