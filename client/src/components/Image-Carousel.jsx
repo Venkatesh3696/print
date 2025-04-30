@@ -34,14 +34,14 @@ const ImageCarousel = ({ images }) => {
   }, [currentIndex, images.length]);
 
   return (
-    <div className="w-full  mx-auto my-4">
+    <div className="w-full  mx-auto mb-4">
       <Card className="overflow-hidden relative">
         <CardContent className="p-0">
           <div className="relative h-64">
             <img
               src={images[currentIndex]?.source}
               alt="Carousel"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover "
             />
             <div className="absolute top-1/2 left-2 transform -translate-y-1/2">
               <Button variant="ghost" size="icon" onClick={handlePrev}>

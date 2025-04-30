@@ -1,9 +1,11 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { UserRound, ShoppingCart, Heart, Logs } from "lucide-react";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { UserRound, ShoppingCart, Heart, Search } from "lucide-react";
 import { Button } from "./ui/button";
-import { openCart } from "@/redux/slices/dialogsSlice";
+
 import { useDispatch, useSelector } from "react-redux";
+import { openCart, setSearchText } from "@/redux/slices/headerSlice";
+import { fetchAllFilteredProducts } from "@/redux/slices/productSlice";
 
 const categories = [
   {
@@ -35,10 +37,18 @@ const categories = [
 
 const Header = () => {
   const dispatch = useDispatch();
+  const { searchText } = useSelector((state) => state.header);
 
-  const { isSearchOpen, isCartOpen } = useSelector((state) => state.dialog);
+  const navigate = useNavigate();
 
-  console.log(isCartOpen);
+  const onSearchSubmit = (e) => {
+    console.log("searching");
+    e.preventDefault();
+
+    dispatch(fetchAllFilteredProducts(searchText));
+    navigate(`/products?search=${searchText}`);
+  };
+
   return (
     <header className="shadow-md shadow-gray-500 py-4">
       <div className="md:mx-16 flex justify-between items-center ">
@@ -60,6 +70,22 @@ const Header = () => {
             </NavLink>
           ))}
         </div>
+        <form
+          className="flex border-2 border-black p-1 rounded-2xl px-4 w-50 "
+          onSubmit={onSearchSubmit}
+        >
+          <input
+            type="search"
+            value={searchText}
+            onChange={(e) => dispatch(setSearchText(e.target.value))}
+            className="border-0 focus:border-none focus:outline-none w-full"
+            placeholder="Search here.."
+          />
+          <button className="cursor-pointer">
+            <Search />
+          </button>
+        </form>
+
         <div className="flex justify-center gap-6 items-center">
           <UserRound />
           <Heart />

@@ -1,39 +1,32 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import { closeCart } from "@/redux/slices/dialogsSlice";
-import API from "@/utils/axiosInstance";
+import { closeCart } from "@/redux/slices/headerSlice";
+
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "./ui/sheet";
+import CartItem from "./CartItem";
+import { Button } from "./ui/button";
+import { getCart } from "@/redux/slices/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const CartDialog = () => {
-  const { isCartOpen } = useSelector((state) => state.dialog);
+  const { isCartOpen } = useSelector((state) => state.header);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   if (!open) dispatch(closeCart());
 
+  const { cartItems } = useSelector((state) => state.cart);
+
+  console.log("items in cart dialog ", cartItems);
+
   useEffect(() => {
-    console.log("cart mounted");
-
-    const fetchCartItems = async () => {
-      const { data } = await API.get("/api/cart");
-      console.log(data);
-    };
-
-    fetchCartItems();
-  }, []);
+    dispatch(getCart());
+  }, [dispatch]);
 
   return (
     <Sheet
@@ -43,7 +36,7 @@ const CartDialog = () => {
       }}
       className="p-0"
     >
-      <SheetContent className="fixed h-screen p-0">
+      <SheetContent className="fixed h-screen p-0 flex flex-col justify-start">
         <SheetHeader className="p-0">
           <SheetTitle className="w-full font-bold p-2">
             Shopping Cart
@@ -52,7 +45,25 @@ const CartDialog = () => {
             Your brand deserves this! Click Buy Now to Proceed
           </SheetDescription>
         </SheetHeader>
-        <div></div>
+        <div className="flex flex-col">
+          {cartItems.map((item, i) => (
+            <CartItem key={i} item={item} />
+          ))}
+        </div>
+
+        <div className="p-5 justify-self-end">
+          <div className="flex justify-between items-center">
+            <h1>Total: </h1>
+            <h1>₹ {1000}</h1>
+          </div>
+          <p>Inclusive of all taxes and shipping</p>
+          <Button
+            className="w-full cursor-pointer "
+            onClick={() => navigate("/checkout")}
+          >
+            BUY NOW
+          </Button>
+        </div>
       </SheetContent>
     </Sheet>
   );

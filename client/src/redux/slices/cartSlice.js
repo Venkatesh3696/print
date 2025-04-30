@@ -1,33 +1,38 @@
 import API from "@/utils/axiosInstance";
-
-const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  cart: null,
+  cartItems: [],
   loading: false,
-  error: null,
 };
 
-export const getCart = createAsyncThunk(
-  "auth/login",
-  async (formData, { rejectWithValue }) => {
-    try {
-      const response = await API.get("/api/carts", formData);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Login failed");
-    }
-  }
-);
+export const getCart = createAsyncThunk("cart/getcart", async () => {
+  try {
+    const { data } = await API.get("/api/cart");
 
-export const addCart = createAsyncThunk(
-  "auth/login",
-  async (formData, { rejectWithValue }) => {
+    return data;
+  } catch (error) {
+    return error.response?.data;
+  }
+});
+
+export const addToCart = createAsyncThunk("cart/add", async (formData) => {
+  try {
+    const response = await API.post("/api/cart", formData);
+    return response.data;
+  } catch (error) {
+    return error.response?.data;
+  }
+});
+
+export const removeFromCart = createAsyncThunk(
+  "cart/remove",
+  async (formData) => {
     try {
-      const response = await API.post("/api/carts", formData);
+      const response = await API.post("/api/cart", formData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Login failed");
+      return error.response?.data;
     }
   }
 );
@@ -35,23 +40,39 @@ export const addCart = createAsyncThunk(
 const cartSlice = createSlice({
   name: "cart",
   initialState,
-  reducers: {
-    setUser: (state, action) => {},
-  },
   extraReducers: (builder) => {
     builder
-      .addCase(getCart.fulfilled, (state, action) => {
-        state.loading = true;
-        state.error = null;
-        state.cart = action.payload.data;
-      })
       .addCase(getCart.pending, (state) => {
         state.loading = true;
       })
+      .addCase(getCart.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log("in slice", action.payload[0].items);
+        state.cartItems = action.payload[0].items;
+      })
       .addCase(getCart.rejected, (state) => {
         state.loading = true;
-        state.error = null;
-        state.cart = [];
+        state.cartItems = [];
+      })
+      .addCase(addToCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload.data[0];
+      })
+      .addCase(addToCart.rejected, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeFromCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeFromCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload.data;
+      })
+      .addCase(removeFromCart.rejected, (state) => {
+        state.loading = true;
       });
   },
 });

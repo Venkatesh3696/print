@@ -32,9 +32,7 @@ export const createProduct = async (req, res) => {
     }
     const image = await uploadImage(req.file.path);
 
-    console.log("Creating product", image);
-
-    if (!name || !price || !description || !category || !image) {
+    if (!name || !price || !category || !image) {
       return res.status(400).json({ message: "All fields are required." });
     }
 

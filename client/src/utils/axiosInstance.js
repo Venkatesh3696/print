@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseURL =
   process.env.NODE_ENV === "production"
-    ? "https://mycommerce-4e2h.onrender.com"
+    ? "https://print-lu2y.onrender.com/"
     : "http://localhost:5000";
 
 const API = axios.create({

@@ -1,28 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const dialogSlice = createSlice({
-  name: "dialog",
+  name: "headerSlice",
   initialState: {
     isCartOpen: false,
-    isSearchOpen: false,
+    searchText: "",
   },
+
   reducers: {
     openCart: (state) => {
       state.isCartOpen = true;
     },
     closeCart: (state) => {
-      console.log("closing cart");
       state.isCartOpen = false;
     },
-    openSearch: (state) => {
-      state.isSearchOpen = true;
-    },
-    closeSearch: (state) => {
-      state.isSearchOpen = false;
+    setSearchText: (state, action) => {
+      state.searchText = action.payload;
     },
   },
 });
 
-export const { openCart, closeCart, openSearch, closeSearch } =
-  dialogSlice.actions;
+export const { openCart, closeCart, setSearchText } = dialogSlice.actions;
 export default dialogSlice.reducer;

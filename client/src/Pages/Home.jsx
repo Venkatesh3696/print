@@ -1,16 +1,17 @@
 import ImageCarousel from "@/components/Image-Carousel";
 import ProductCard from "@/components/ProductCard";
-import { bannerImages, products } from "@/lib/data";
+import { bannerImages } from "@/lib/data";
 import API from "@/utils/axiosInstance";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const Home = () => {
+  const [products, setProducts] = useState([]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await API.get("/api/products");
-        console.log(response.data);
-        return response.data;
+        setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -65,9 +66,10 @@ const Home = () => {
           />
         </div>
       </section>
-      <div className="flex items-center gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar h-80 mt-5 no-scrollbar">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+      <h1 className="mt-3 font-bold text-xl">Featured Products</h1>
+      <div className="flex items-center gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar mt-5 no-scrollbar">
+        {products.map((product, i) => (
+          <ProductCard key={i} product={product} />
         ))}
       </div>
     </div>
