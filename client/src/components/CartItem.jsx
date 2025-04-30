@@ -1,8 +1,12 @@
 import React from "react";
 import { Separator } from "./ui/separator";
+import { useDispatch } from "react-redux";
+import { removeFromCart, updateQuantity } from "@/redux/slices/cartSlice";
+import { Button } from "./ui/button";
 
 const CartItem = ({ item }) => {
-  console.log(item);
+  const dispatch = useDispatch();
+
   return (
     <div className="flex p-2 ">
       <img src={item?.product?.image} alt="cart item" className="w-30 h-30" />
@@ -13,12 +17,43 @@ const CartItem = ({ item }) => {
           <span>₹ {item?.product?.price}</span>
         </h1>
         <div className="flex gap-3 items-center">
-          <div className="flex justify-between px-4 p-1 w-20  border-2 border-black rounded-full">
-            <button className="cursor-pointer">-</button>
+          <div className="flex justify-between items-center px-4 p-1 w-20  border-2 border-black rounded-full">
+            <button
+              onClick={() =>
+                dispatch(
+                  updateQuantity({
+                    type: "minus",
+                    productId: item?.product?._id,
+                  })
+                )
+              }
+              className="cursor-pointer text-2xl"
+            >
+              -
+            </button>
             <p>{item?.quantity}</p>
-            <button className="cursor-pointer">+</button>
+            <button
+              onClick={() =>
+                dispatch(
+                  updateQuantity({
+                    type: "plus",
+                    productId: item?.product?._id,
+                  })
+                )
+              }
+              className="cursor-pointer text-2xl"
+            >
+              +
+            </button>
           </div>
-          <h1>delete</h1>
+          <Button
+            className="cursor-pointer"
+            onClick={() => {
+              dispatch(removeFromCart({ productId: item?.product?._id }));
+            }}
+          >
+            Delete
+          </Button>
         </div>
       </div>
     </div>

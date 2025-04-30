@@ -1,11 +1,10 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { UserRound, ShoppingCart, Heart, Search } from "lucide-react";
 import { Button } from "./ui/button";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { openCart } from "@/redux/slices/headerSlice";
-import { fetchAllFilteredProducts } from "@/redux/slices/productSlice";
 import SearchInput from "./SearchInput";
 
 const categories = [

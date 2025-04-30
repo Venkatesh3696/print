@@ -59,10 +59,10 @@ const Checkout = () => {
           </form>
         </div>
         <div>
-          <h1>order summary</h1>
-          <div>
-            {cartItems.map((item) => (
-              <div className="flex ">
+          <h1 className="text-3xl">order summary</h1>
+          <div className="flex flex-col gap-4 mt-4">
+            {cartItems?.map((item, i) => (
+              <div key={i} className="flex gap-4 ">
                 <img
                   src={item?.product?.image}
                   alt="cart item"

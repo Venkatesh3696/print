@@ -10,7 +10,7 @@ export const getCart = createAsyncThunk("cart/getcart", async () => {
   try {
     const { data } = await API.get("/api/cart");
 
-    return data;
+    return data[0];
   } catch (error) {
     return error.response?.data;
   }
@@ -25,12 +25,28 @@ export const addToCart = createAsyncThunk("cart/add", async (formData) => {
   }
 });
 
+export const updateQuantity = createAsyncThunk(
+  "cart/updateQuantity",
+  async (formData) => {
+    try {
+      const response = await API.put("/api/cart", formData);
+      return response.data;
+    } catch (error) {
+      return error.response?.data;
+    }
+  }
+);
+
 export const removeFromCart = createAsyncThunk(
   "cart/remove",
   async (formData) => {
+    const { productId } = formData;
+    console.log("in rem crt", productId);
+    console.log({ productId });
     try {
-      const response = await API.post("/api/cart", formData);
-      return response.data;
+      const { data } = await API.delete(`/api/cart/${productId}`);
+      console.log(data);
+      return data;
     } catch (error) {
       return error.response?.data;
     }
@@ -47,8 +63,7 @@ const cartSlice = createSlice({
       })
       .addCase(getCart.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("in slice", action?.payload[0]?.items);
-        state.cartItems = action?.payload[0]?.items;
+        state.cartItems = action?.payload?.items;
       })
       .addCase(getCart.rejected, (state) => {
         state.loading = true;
@@ -59,7 +74,7 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.cartItems = action.payload.data;
+        state.cartItems = action?.payload?.items;
       })
       .addCase(addToCart.rejected, (state) => {
         state.loading = true;
@@ -69,13 +84,31 @@ const cartSlice = createSlice({
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.cartItems = action.payload.data;
+        state.cartItems = action?.payload?.cart?.items;
       })
       .addCase(removeFromCart.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateQuantity.pending, (state) => {
         state.loading = true;
+      })
+      .addCase(updateQuantity.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action?.payload?.cartItems?.items;
+      })
+      .addCase(updateQuantity.rejected, (state) => {
+        state.loading = false;
+        state.cartItems = [];
       });
   },
 });
+
+export const selectCartTotal = (state) =>
+  state?.cart?.cartItems?.product?.reduce((total, item) => {
+    console.log(total, item);
+
+    return total + item.price * item.quantity, 0;
+  });
 
 export const { setUser } = cartSlice.actions;
 

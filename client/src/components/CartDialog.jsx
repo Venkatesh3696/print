@@ -12,17 +12,17 @@ import {
 import CartItem from "./CartItem";
 import { Button } from "./ui/button";
 import { getCart } from "@/redux/slices/cartSlice";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { selectCartTotal } from "@/redux/slices/selectorSlice";
 
 const CartDialog = () => {
   const { isCartOpen } = useSelector((state) => state.header);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  if (!open) dispatch(closeCart());
 
   const { cartItems } = useSelector((state) => state.cart);
 
-  console.log("items in cart dialog ", cartItems);
+  const total = useSelector(selectCartTotal);
 
   useEffect(() => {
     dispatch(getCart());
@@ -45,7 +45,14 @@ const CartDialog = () => {
             Your brand deserves this! Click Buy Now to Proceed
           </SheetDescription>
         </SheetHeader>
-        <div className="flex flex-col">
+
+        {cartItems === undefined ? (
+          <p className="p-4">
+            you are not logged in please <NavLink to="/login">Login</NavLink>
+          </p>
+        ) : null}
+
+        <div className="flex flex-col  overflow-auto h-8/12">
           {cartItems?.map((item, i) => (
             <CartItem key={i} item={item} />
           ))}
@@ -54,7 +61,7 @@ const CartDialog = () => {
         <div className="p-5 justify-self-end">
           <div className="flex justify-between items-center">
             <h1>Total: </h1>
-            <h1>₹ {1000}</h1>
+            <h1>₹ {total}</h1>
           </div>
           <p>Inclusive of all taxes and shipping</p>
           <Button

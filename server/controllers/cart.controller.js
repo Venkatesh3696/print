@@ -23,9 +23,13 @@ export const addItemToCart = async (req, res) => {
         .json({ message: "Product ID, quantity and price are required" });
     }
 
-    let cart = await Cart.findOne({ userId: req?.userId });
+    let cart = await Cart.findOne({ userId: req?.userId }).populate(
+      "items.product"
+    );
 
-    if (cart.length === 0) {
+    console.log(cart);
+
+    if (!cart) {
       cart = await Cart.create({ userId: req?.userId });
     }
 
@@ -52,57 +56,67 @@ export const addItemToCart = async (req, res) => {
   }
 };
 
-export const decreaseItemFromCart = async (req, res) => {
-  const { productId } = req.params;
-
+export const updateQuantity = async (req, res) => {
+  const { productId, type } = req.body;
+  console.log(productId, type);
   try {
-    const cart = await Cart.findOne({ userId: req?.userId });
+    const cart = await Cart.findOne({ userId: req?.userId }).populate(
+      "items.product"
+    );
 
     if (!cart) {
       return res.status(500).json("cart not found");
     }
 
-    const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
-    );
+    const itemIndex = cart?.items?.findIndex((item) => {
+      return item?.product?._id?.toString() === productId;
+    });
 
     if (itemIndex > -1) {
-      cart.items[itemIndex].quantity -= quantity;
-
-      if (cart?.items[itemIndex].quantity === 1) {
-        cart.items.filter((each) => each.productId !== productId);
+      if (type === "plus") {
+        cart.items[itemIndex].quantity += 1;
+      } else if (type === "minus") {
+        cart.items[itemIndex].quantity -= 1;
       }
-    } else {
-      res.status(500).json({ message: "Item not in  cart" });
     }
 
-    await Cart.save();
-    res.status(200).json({ message: "Item removed from cart" });
+    await cart.save();
+
+    res
+      .status(200)
+      .json({ message: "Item removed from cart", cartItems: cart });
   } catch (error) {
     res.status(500).json({ message: "Error removing item from cart", error });
   }
 };
 
 export const removeItemFromCart = async (req, res) => {
-  const { productId } = req.params;
+  const { itemId } = req.params;
 
   try {
-    const cart = await Cart.find({ userId: req?.userId });
+    const cart = await Cart.findOne({ userId: req.userId }).populate(
+      "items.product"
+    );
+
     if (!cart) {
       return res.status(500).json("cart not found");
     }
 
-    const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+    const itemIndex = cart?.items?.findIndex(
+      (item) => item?.product?._id?.toString() === itemId
     );
 
     if (itemIndex > -1) {
-      cart.items.filter((each) => each.productId !== productId);
+      cart.items = cart?.items?.filter((item) => {
+        return item?.product?._id?.toString() !== itemId;
+      });
     } else {
-      res.status(500).json({ message: "Item not in  cart" });
+      return res.status(500).json({ message: "Item not in  cart" });
     }
 
-    res.status(200).json({ message: "Item removed from cart" });
+    await cart.save();
+
+    res.status(200).json({ message: "Item removed from cart", cart });
   } catch (error) {
     res.status(500).json({ message: "Error removing item from cart", error });
   }

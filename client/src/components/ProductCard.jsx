@@ -11,11 +11,11 @@ const ProductCard = ({ product }) => {
   return (
     <Card
       className="flex justify-between max-w-80 h-100 bg-white rounded-lg shadow-md p-2 snap-center cursor-pointer transition-transform duration-300 hover:scale-105 w-full gap -4 flex-shrink-0"
-      onClick={() => navigate(`/product/${product._id}`)}
+      onClick={() => navigate(`/products/${product._id}`)}
     >
       <img alt={product.name} src={product?.image} className="h-50" />
 
-      <h1>{product.name}</h1>
+      <h1>{product?.name?.slice(0, 40)}...</h1>
       <div className="flex justify-between items-center">
         <span className="text-lg font-bold text-green-600">
           ₹ {product.price}

@@ -66,8 +66,8 @@ const Home = () => {
           />
         </div>
       </section>
-      <h1 className="mt-3 font-bold text-xl">Featured Products</h1>
-      <div className="flex items-center gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar mt-5 no-scrollbar">
+      <h1 className="m-3 font-bold text-xl">Featured Products</h1>
+      <div className="flex h-120 p-4 items-center gap-3 overflow-x-auto snap-mandatory no-scrollbar mt-5 no-scrollbar">
         {products.map((product, i) => (
           <ProductCard key={i} product={product} />
         ))}

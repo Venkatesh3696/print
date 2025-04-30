@@ -9,10 +9,8 @@ const useSyncSearchWithURL = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    console.log({ params });
-
     const query = params.get("search") || "";
-    console.log(query);
+
     dispatch(setKeyword(query));
   }, [location.search, dispatch]);
 };
