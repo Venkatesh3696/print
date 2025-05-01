@@ -2,58 +2,51 @@ import API from "@/utils/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isAuthenticated: false,
   user: null,
-  token: null,
+  isAuthenticated: false,
   loading: false,
-  error: null,
-  showLoginPopup: false,
-  showRegisterPopup: false,
+  // showLoginPopup: false,
+  // showRegisterPopup: false,
 };
 
 export const registerUser = createAsyncThunk(
   "auth/register",
-  async (formData, { rejectWithValue }) => {
+  async (formData) => {
     try {
       const response = await API.post("/api/users/register", formData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Registration failed");
+      return error;
     }
   }
 );
 
-export const loginUser = createAsyncThunk(
-  "auth/login",
-  async (formData, { rejectWithValue }) => {
-    try {
-      const response = await API.post("/api/users/login", formData);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Login failed");
-    }
+export const loginUser = createAsyncThunk("auth/login", async (formData) => {
+  try {
+    const response = await API.post("/api/users/login", formData);
+    return response.data;
+  } catch (error) {
+    return error;
   }
-);
+});
 
-export const checkAuth = createAsyncThunk(
-  "auth/checkAuth",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await API.get("/api/users/check-auth", {});
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data || "Authentication check failed"
-      );
-    }
+export const checkAuth = createAsyncThunk("auth/checkAuth", async () => {
+  try {
+    const { data } = await API.get("/api/users/check-auth");
+    console.log("checking auth ==>>> ", data);
+    return data;
+  } catch (error) {
+    return error;
   }
-);
+});
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state, action) => {},
+    logout: (state) => {
+      (state.isAuthenticated = false), (state.user = null);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -96,6 +89,7 @@ const authSlice = createSlice({
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
+
         state.user = action.payload.user;
       })
       .addCase(checkAuth.rejected, (state, action) => {

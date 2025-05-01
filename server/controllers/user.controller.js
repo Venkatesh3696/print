@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   const { name, email, password, isAdmin = false } = req.body;
@@ -60,4 +61,26 @@ export const getUserProfile = async (req, res) => {
 export const LogoutUser = async (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Logged out successfully" });
+};
+
+export const authMiddleware = async (req, res, next) => {
+  const { token } = req.cookies;
+
+  if (!token)
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorised user!",
+    });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      success: false,
+      message: "Unauthorised user!",
+    });
+  }
 };

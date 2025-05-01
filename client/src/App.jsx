@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Home from "./Pages/Home";
@@ -9,8 +9,16 @@ import CartDialog from "./components/CartDialog";
 import ProductsPage from "./Pages/ProductsPage";
 import Checkout from "./Pages/Checkout";
 import ProductDetails from "./components/ProductDetails";
+import { useDispatch } from "react-redux";
+import { checkAuth } from "./redux/slices/authSlice";
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
   return (
     <div className="w-full min-h-full">
       <CartDialog />

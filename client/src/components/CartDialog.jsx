@@ -17,6 +17,8 @@ import { selectCartTotal } from "@/redux/slices/selectorSlice";
 
 const CartDialog = () => {
   const { isCartOpen } = useSelector((state) => state.header);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,8 +27,10 @@ const CartDialog = () => {
   const total = useSelector(selectCartTotal);
 
   useEffect(() => {
-    dispatch(getCart());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      dispatch(getCart());
+    }
+  }, [dispatch, isAuthenticated]);
 
   return (
     <Sheet
@@ -46,7 +50,7 @@ const CartDialog = () => {
           </SheetDescription>
         </SheetHeader>
 
-        {cartItems === undefined ? (
+        {!isAuthenticated ? (
           <p className="p-4">
             you are not logged in please <NavLink to="/login">Login</NavLink>
           </p>
@@ -67,6 +71,7 @@ const CartDialog = () => {
           <Button
             className="w-full cursor-pointer "
             onClick={() => navigate("/checkout")}
+            disabled={total <= 0}
           >
             BUY NOW
           </Button>
