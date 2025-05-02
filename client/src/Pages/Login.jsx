@@ -55,7 +55,6 @@ const Login = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 };

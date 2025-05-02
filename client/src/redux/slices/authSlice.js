@@ -30,15 +30,22 @@ export const loginUser = createAsyncThunk("auth/login", async (formData) => {
   }
 });
 
-export const checkAuth = createAsyncThunk("auth/checkAuth", async () => {
-  try {
-    const { data } = await API.get("/api/users/check-auth");
-    console.log("checking auth ==>>> ", data);
-    return data;
-  } catch (error) {
-    return error;
+export const checkAuth = createAsyncThunk(
+  "auth/checkAuth",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await API.get("/api/users/check-auth");
+
+      console.log("checking auth ==>>> ", data);
+      return data;
+    } catch (error) {
+      return rejectWithValue({
+        message: error.response?.data?.message || "Authentication failed",
+        status: error.response?.status,
+      });
+    }
   }
-});
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -52,7 +59,6 @@ const authSlice = createSlice({
     builder
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -60,15 +66,13 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
       })
 
       // Handle loginUser
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -76,27 +80,31 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
       })
 
       // Handle checkAuth
       .addCase(checkAuth.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.loading = false;
-        state.isAuthenticated = true;
-
-        state.user = action.payload.user;
+        if (action.payload.status === 401) {
+          state.isAuthenticated = false;
+          state.user = null;
+          console.log("fulfilled check auth", action.payload.response);
+        } else {
+          state.isAuthenticated = true;
+          console.log(action.payload);
+          state.user = action.payload.user;
+        }
       })
       .addCase(checkAuth.rejected, (state, action) => {
+        console.log("rejected ==>> ", action.payload);
         state.loading = false;
         state.isAuthenticated = false;
         state.user = null;
-        state.error = action.payload;
       });
   },
 });
