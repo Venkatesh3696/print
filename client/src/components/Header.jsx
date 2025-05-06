@@ -51,7 +51,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate("/login");
+    navigate("/");
   };
 
   const renderUserAccount = () => (
@@ -70,17 +70,23 @@ const Header = () => {
         <DropdownMenuItem>Profile</DropdownMenuItem>
         {isAuthenticated ? (
           <DropdownMenuGroup>
-            <DropdownMenuItem>My Orders</DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => navigate("/orders")}
+            >
+              My Orders
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleLogout()}>
               Logout
             </DropdownMenuItem>
           </DropdownMenuGroup>
         ) : (
-          <NavLink>
-            <DropdownMenuItem onClick={() => navigate("/login")}>
-              Login
-            </DropdownMenuItem>
-          </NavLink>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </DropdownMenuItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
