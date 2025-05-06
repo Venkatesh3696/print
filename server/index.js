@@ -31,6 +31,7 @@ app.use("/api/products", productRoutes);
 
 app.use("/api/cart", protect, cartRoutes);
 
+
 // app.use("/api/orders", orderRoutes);
 
 app.get("/", (req, res) => {

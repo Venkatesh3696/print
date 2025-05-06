@@ -1,10 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { UserRound, ShoppingCart, Heart, Search } from "lucide-react";
+import {
+  UserRound,
+  ShoppingCart,
+  Heart,
+  Search,
+  SearchIcon,
+} from "lucide-react";
 import { Button } from "./ui/button";
 
 import { useDispatch } from "react-redux";
-import { openCart } from "@/redux/slices/headerSlice";
+import { openCart, openSearch } from "@/redux/slices/headerSlice";
 import SearchInput from "./SearchInput";
 
 const categories = [
@@ -39,7 +45,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   return (
-    <header className="shadow-md shadow-gray-500 py-4">
+    <header className="shadow-md shadow-gray-500 py-4 bg-white sticky top-0 z-50 opacity-100">
       <div className="md:mx-16 flex justify-between items-center ">
         <NavLink to={"/"}>
           <img src="/PRINTMINE_FINAL_LOGO_1.avif" alt="logo" className="w-40" />
@@ -55,14 +61,20 @@ const Header = () => {
             </NavLink>
           ))}
         </div>
-        <SearchInput />
 
         <div className="flex justify-center gap-6 items-center">
+          <Button
+            onClick={() => {
+              dispatch(openSearch());
+            }}
+            className="cursor-pointer bg-white text-black hover:bg-transparent "
+          >
+            <SearchIcon />
+          </Button>
           <UserRound />
           <Heart />
           <Button
             onClick={() => {
-              console.log("open ");
               dispatch(openCart());
             }}
             className="cursor-pointer bg-white text-black hover:bg-transparent "

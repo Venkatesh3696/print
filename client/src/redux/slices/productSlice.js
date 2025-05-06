@@ -9,10 +9,18 @@ const initialState = {
 
 export const fetchAllFilteredProducts = createAsyncThunk(
   "products/fetchallfilteredproducts",
-  async (searchTerm) => {
-    console.log({ searchTerm });
+  async (filters) => {
+    console.log(filters);
     try {
-      const { data } = await API.get(`/api/products?search=${searchTerm}`);
+      const params = {};
+      if (filters.keyword) params.search = filters.keyword;
+      if (filters.category) params.category = filters.category;
+      if (filters.minPrice) params.minPrice = filters.minPrice;
+      if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+
+      console.log("in products slice", params);
+
+      const { data } = await API.get("/api/products", { params });
 
       return data;
     } catch (error) {
@@ -49,7 +57,7 @@ const shoppingProductSlice = createSlice({
       })
       .addCase(fetchAllFilteredProducts.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.productsList = action.payload;
+        state.productsList = action?.payload?.products;
       })
       .addCase(fetchAllFilteredProducts.rejected, (state) => {
         console.log("rejedced");

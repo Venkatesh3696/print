@@ -5,11 +5,13 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getAllCategories,
 } from "../controllers/product.controller.js";
 import { upload } from "../utils/cloudinary.js";
 
 const router = Router();
 
+router.get("/categories", getAllCategories);
 router.get("/", getProducts);
 router.get("/:id", getProductById);
 router.post("/", upload.single("image"), createProduct);

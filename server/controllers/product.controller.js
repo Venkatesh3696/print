@@ -3,17 +3,30 @@ import { Product } from "../models/product.model.js";
 import { uploadImage } from "../utils/cloudinary.js";
 
 export const getProducts = async (req, res) => {
-  console.log("gettting products");
-  console.log(req.query);
   const filter = {};
-  const { search } = req.query || "";
+  const { search, category, minPrice, maxPrice } = req.query || {};
   if (search) {
-    filter.$text = { $search: search };
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (category) {
+    filter.category = category;
+  }
+
+  if (minPrice || maxPrice) {
+    filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
   }
 
   try {
     const products = await Product.find(filter);
-    res.status(200).json(products);
+    res
+      .status(200)
+      .json({ message: "Products fetched successfully!", products });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
@@ -84,6 +97,16 @@ export const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
     res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getAllCategories = async (req, res) => {
+  console.log("catt");
+  try {
+    const categories = await Product.distinct("category");
+    res.status(200).json({ categories });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

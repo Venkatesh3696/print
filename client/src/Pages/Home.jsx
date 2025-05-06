@@ -10,8 +10,9 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await API.get("/api/products");
-        setProducts(response.data);
+        const { data } = await API.get("/api/products");
+
+        setProducts(data?.products?.slice(0, 4));
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -67,8 +68,8 @@ const Home = () => {
         </div>
       </section>
       <h1 className="m-3 font-bold text-xl">Featured Products</h1>
-      <div className="flex h-120 p-4 items-center gap-3 overflow-x-auto snap-mandatory no-scrollbar mt-5 no-scrollbar">
-        {products.map((product, i) => (
+      <div className="grid grid-cols-4 h-120 p-4  gap-3 overflow-x-auto snap-mandatory no-scrollbar mt-5 no-scrollbar">
+        {products?.map((product, i) => (
           <ProductCard key={i} product={product} />
         ))}
       </div>

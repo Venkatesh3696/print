@@ -7,8 +7,6 @@ const SearchInput = () => {
   const navigate = useNavigate();
   const { keyword } = useSelector((state) => state.search);
 
-  console.log(keyword);
-
   const handleChange = (e) => {
     const value = e.target.value;
     dispatch(setKeyword(value));

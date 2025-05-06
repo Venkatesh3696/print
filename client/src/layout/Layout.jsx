@@ -6,9 +6,9 @@ import React from "react";
 const Layout = ({ children }) => {
   useSyncSearchWithURL();
   return (
-    <div className="min-h-screen max-h-screen flex flex-col justify-between ">
+    <div className="min-h-screen max-h-screen flex flex-col justify-start ">
       <Header />
-      {children}
+      <div className="min-h-screen">{children}</div>
       <Footer />
     </div>
   );
