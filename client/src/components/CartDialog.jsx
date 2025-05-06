@@ -24,7 +24,7 @@ const CartDialog = () => {
 
   const { cartItems } = useSelector((state) => state.cart);
 
-  const total = useSelector(selectCartTotal);
+  const total = useSelector(selectCartTotal) || 0;
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,15 +32,13 @@ const CartDialog = () => {
     }
   }, [dispatch, isAuthenticated]);
 
-  console.log(cartItems);
-
   return (
     <Sheet
       open={isCartOpen}
       onOpenChange={(open) => {
         if (!open) dispatch(closeCart());
       }}
-      className="p-0"
+      className="p-2"
     >
       <SheetContent className="fixed h-screen p-0 flex flex-col justify-start">
         <SheetHeader className="p-0">

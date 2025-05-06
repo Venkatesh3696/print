@@ -9,8 +9,9 @@ const initialState = {
 export const getCart = createAsyncThunk("cart/getcart", async () => {
   try {
     const { data } = await API.get("/api/cart");
+    console.log("cart data", data);
 
-    return data[0];
+    return data;
   } catch (error) {
     return error.response?.data;
   }
@@ -72,6 +73,7 @@ const cartSlice = createSlice({
       })
       .addCase(getCart.fulfilled, (state, action) => {
         state.loading = false;
+        // console.log("in slice fulfilled", action?.payload?.items);
         state.cartItems = action?.payload?.items;
       })
       .addCase(getCart.rejected, (state) => {

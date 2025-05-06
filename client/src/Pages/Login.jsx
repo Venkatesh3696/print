@@ -1,7 +1,7 @@
 // filepath: d:\CCBP\coding-practice\new_assignments\mobishala\client\src\components\LoginPopup.jsx
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/slices/authSlice";
+import { checkAuth, loginUser } from "../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -18,6 +18,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await dispatch(loginUser(formData)).unwrap();
+      await dispatch(checkAuth());
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
