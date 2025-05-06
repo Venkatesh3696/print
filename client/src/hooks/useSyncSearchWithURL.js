@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setKeyword } from "@/redux/slices/searchSlice";
+import {
+  setKeyword,
+  setCategory,
+  setMinPrice,
+  setMaxPrice,
+} from "@/redux/slices/searchSlice";
 
 const useSyncSearchWithURL = () => {
   const location = useLocation();
@@ -9,9 +14,10 @@ const useSyncSearchWithURL = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const query = params.get("search") || "";
-
-    dispatch(setKeyword(query));
+    dispatch(setKeyword(params.get("search") || ""));
+    dispatch(setCategory(params.get("category") || ""));
+    dispatch(setMinPrice(params.get("minPrice") || ""));
+    dispatch(setMaxPrice(params.get("maxPrice") || ""));
   }, [location.search, dispatch]);
 };
 

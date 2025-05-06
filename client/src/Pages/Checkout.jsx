@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import API from "@/utils/axiosInstance";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -11,17 +12,30 @@ const initialAddress = {
 
 const Checkout = () => {
   const [address, setAddress] = useState(initialAddress);
+  const { cartItems } = useSelector((state) => state.cart);
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   const onChangeAddress = (e) => {
     setAddress((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const { cartItems } = useSelector((state) => state.cart);
+  const handlePlaceOrder = async () => {
+    try {
+      await API.post("/api/orders", {
+        address,
+        items: cartItems,
+      });
+      setOrderSuccess(true);
+    } catch (error) {
+      alert("Order failed. Please try again.");
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex w-full h-screen">
-      <div className="flex ">
-        <div className="p-5 w-60">
+      <div className="flex w-full">
+        <div className="p-5 w-1/3">
           <h1>Address</h1>
           <form className="flex flex-col items-start">
             <label>Door No</label>
@@ -48,7 +62,7 @@ const Checkout = () => {
               value={address.city}
               onChange={onChangeAddress}
             />
-            <label>City</label>
+            <label>Pincode </label>
             <input
               required={true}
               className="border border-black w-full"
@@ -81,9 +95,14 @@ const Checkout = () => {
               </div>
             ))}
           </div>
+          <Button
+            className="w-full mt-5 cursor-pointer"
+            onClick={handlePlaceOrder}
+          >
+            Place Order
+          </Button>
         </div>
       </div>
-      <Button className="self-end">Place Order</Button>
     </div>
   );
 };
