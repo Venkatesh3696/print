@@ -53,6 +53,15 @@ export const removeFromCart = createAsyncThunk(
   }
 );
 
+export const clearCart = createAsyncThunk("cart/clear", async () => {
+  try {
+    const { data } = await API.delete("/api/cart");
+    return data;
+  } catch (error) {
+    return error.response?.data;
+  }
+});
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -99,6 +108,16 @@ const cartSlice = createSlice({
       .addCase(updateQuantity.rejected, (state) => {
         state.loading = false;
         state.cartItems = [];
+      })
+      .addCase(clearCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(clearCart.fulfilled, (state) => {
+        state.loading = false;
+        state.cartItems = [];
+      })
+      .addCase(clearCart.rejected, (state) => {
+        state.loading = false;
       });
   },
 });

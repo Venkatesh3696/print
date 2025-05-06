@@ -13,6 +13,8 @@ import { useDispatch } from "react-redux";
 import { checkAuth } from "./redux/slices/authSlice";
 import SearchDialog from "./components/SearchDialog";
 import RequireAuth from "./hooks/RequireAuth";
+import Orders from "./Pages/Orders";
+import OrderDetails from "./Pages/OrderDetails";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -40,6 +42,8 @@ const App = () => {
               </RequireAuth>
             }
           />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:orderid" element={<OrderDetails />} />
         </Routes>
       </Layout>
     </div>

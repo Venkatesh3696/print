@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
   return (
     <div className="min-h-screen max-h-screen flex flex-col justify-start ">
       <Header />
-      <div className="min-h-screen">{children}</div>
+      <div className="min-h-screen overflow-auto">{children}</div>
       <Footer />
     </div>
   );

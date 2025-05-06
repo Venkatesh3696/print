@@ -1,24 +1,33 @@
-import { Cart } from "../models/cart.model.js";
 import { Order } from "../models/order.model.js";
 
 export const placeOrder = async (req, res) => {
   try {
-    const cart = await Cart.find({ userId: req.user._id });
+    const { address, items } = req.body;
 
-    const cartProducts = cart.items;
+    const userId = req?.userId;
 
-    const newOrder = await Order.addItem(req.user._id, cartProducts);
-    res.status(201).json({ order: newOrder });
+    const order = new Order({
+      user: userId,
+      address,
+      items,
+    });
+
+    await order.save();
+    res.status(201).json({ message: "Order created", order });
   } catch (error) {
-    res.status(500).json({ message: "Error adding item to cart", error });
+    console.log(error);
+    res.status(500).json({ error: "Failed to create order" });
   }
 };
 
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user._id });
+    const orders = await Order.find({ user: req?.userId }).populate(
+      "items.product"
+    );
     res.status(200).json({ orders });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error fetching orders", error });
   }
 };
@@ -26,7 +35,7 @@ export const getOrders = async (req, res) => {
 export const getOrderDetails = async (req, res) => {
   const { orderid } = req.params;
   try {
-    const order = await Order.findById(orderid);
+    const order = await Order.findById(orderid).populate("items.product");
     res.status(200).json({ order });
   } catch (error) {
     res.status(500).json({ message: "Error fetching order details", error });

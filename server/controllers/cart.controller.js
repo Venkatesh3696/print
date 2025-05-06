@@ -2,7 +2,7 @@ import { Cart } from "../models/cart.model.js";
 
 export const getCartItems = async (req, res) => {
   try {
-    const cartItems = await Cart.find({ userId: req.userId }).populate(
+    const cartItems = await Cart.findOne({ userId: req.userId }).populate(
       "items.product"
     );
 
@@ -120,4 +120,9 @@ export const removeItemFromCart = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error removing item from cart", error });
   }
+};
+
+export const deleteCart = async (req, res) => {
+  await Cart.findOneAndUpdate({ userId: req.userId }, { items: [] });
+  res.json({ message: "Cart cleared" });
 };

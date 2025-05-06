@@ -18,6 +18,8 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, [productid]);
 
+  console.log(product);
+
   return (
     <div className="p-5">
       <h1 className="text-3xl my-4">Product details</h1>

@@ -11,7 +11,7 @@ import { setKeyword } from "@/redux/slices/searchSlice";
 
 const SearchDialog = () => {
   const { isSearchOpen } = useSelector((state) => state.header);
-  const { keyword } = useSelector((state) => state.search);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const dispatch = useDispatch();
@@ -22,8 +22,6 @@ const SearchDialog = () => {
     const query = e.target.value;
     setSearchQuery(query);
     dispatch(setKeyword(query));
-
-    console.log({ keyword });
 
     if (query.length > 2) {
       try {
@@ -74,7 +72,7 @@ const SearchDialog = () => {
             <div
               key={product?._id}
               className="flex items-center space-x-4 p-2 hover:bg-gray-100 cursor-pointer rounded-md"
-              onClick={() => handleProductSelect(product?.id)}
+              onClick={() => handleProductSelect(product?._id)}
             >
               <img
                 src={product?.image}
@@ -91,9 +89,6 @@ const SearchDialog = () => {
           {searchQuery?.length > 2 && searchResults?.length === 0 && (
             <p className="text-center text-gray-500">No products found</p>
           )}
-          {/* {searchQuery?.length > 2 ? (
-            <p className="text-center text-gray-500">No products found</p>
-          ) : null} */}
         </div>
 
         {searchResults?.length > 0 && (

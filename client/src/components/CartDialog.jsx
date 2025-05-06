@@ -32,6 +32,8 @@ const CartDialog = () => {
     }
   }, [dispatch, isAuthenticated]);
 
+  console.log(cartItems);
+
   return (
     <Sheet
       open={isCartOpen}

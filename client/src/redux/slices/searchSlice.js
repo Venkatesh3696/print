@@ -24,6 +24,7 @@ const searchSlice = createSlice({
   },
 });
 
-export const { setKeyword } = searchSlice.actions;
+export const { setKeyword, setMaxPrice, setMinPrice, setCategory } =
+  searchSlice.actions;
 
 export default searchSlice.reducer;

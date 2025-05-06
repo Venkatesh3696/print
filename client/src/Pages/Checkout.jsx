@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { clearCart } from "@/redux/slices/cartSlice";
 import API from "@/utils/axiosInstance";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const initialAddress = {
   doorNo: "",
@@ -13,7 +15,9 @@ const initialAddress = {
 const Checkout = () => {
   const [address, setAddress] = useState(initialAddress);
   const { cartItems } = useSelector((state) => state.cart);
-  const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onChangeAddress = (e) => {
     setAddress((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -21,11 +25,13 @@ const Checkout = () => {
 
   const handlePlaceOrder = async () => {
     try {
-      await API.post("/api/orders", {
+      const { data } = await API.post("/api/orders", {
         address,
         items: cartItems,
       });
-      setOrderSuccess(true);
+      console.log(data?.order?._id);
+      dispatch(clearCart());
+      navigate(`/orders/${data?.order?._id}`);
     } catch (error) {
       alert("Order failed. Please try again.");
       console.log(error);

@@ -8,7 +8,7 @@ import productRoutes from "./routes/product.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import { protect } from "./middleware/auth.middleware.js";
 import { corsOptions } from "./config/corsConfig.js";
-// import orderRoutes from "./routes/order.route.js";
+import orderRoutes from "./routes/order.route.js";
 
 dotenv.config();
 
@@ -31,8 +31,7 @@ app.use("/api/products", productRoutes);
 
 app.use("/api/cart", protect, cartRoutes);
 
-
-// app.use("/api/orders", orderRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   res.send(`API is running... on PORT ${port} `);
