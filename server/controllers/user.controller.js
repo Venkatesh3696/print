@@ -59,8 +59,10 @@ export const getUserProfile = async (req, res) => {
 };
 
 export const LogoutUser = async (req, res) => {
-  res.clearCookie("token");
-  res.status(200).json({ message: "Logged out successfully" });
+  res
+    .clearCookie("token", { httpOnly: true, sameSite: "none", secure: true })
+    .status(200)
+    .json({ message: "Logged out successfully" });
 };
 
 export const authMiddleware = async (req, res, next) => {
