@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { logoutUser } from "@/redux/slices/authSlice";
+import { checkAuth, logoutUser } from "@/redux/slices/authSlice";
 
 const categories = [
   {
@@ -51,6 +51,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    dispatch(checkAuth());
     navigate("/");
   };
 

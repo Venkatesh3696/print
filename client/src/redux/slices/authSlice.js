@@ -1,6 +1,5 @@
 import API from "@/utils/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { act } from "react";
 
 const initialState = {
   user: null,
@@ -68,11 +67,7 @@ export const logoutUser = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    logout: (state) => {
-      (state.isAuthenticated = false), (state.user = null);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -132,8 +127,8 @@ const authSlice = createSlice({
           state.user = action.payload.user;
         }
       })
-      .addCase(checkAuth.rejected, (state, action) => {
-        console.log("rejected ==>> ", action.payload);
+      .addCase(checkAuth.rejected, (state) => {
+        // console.log("rejected ==>> ", action.payload);
         state.loading = false;
         state.isAuthenticated = false;
         state.user = null;
