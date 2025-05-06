@@ -1,17 +1,20 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import {
-  UserRound,
-  ShoppingCart,
-  Heart,
-  Search,
-  SearchIcon,
-} from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { UserRound, ShoppingCart, Heart, SearchIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openCart, openSearch } from "@/redux/slices/headerSlice";
 import SearchInput from "./SearchInput";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { logoutUser } from "@/redux/slices/authSlice";
 
 const categories = [
   {
@@ -43,6 +46,45 @@ const categories = [
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/login");
+  };
+
+  const renderUserAccount = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">
+          <UserRound />
+          <p className="sr-only">Account</p>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>
+          <UserRound />
+        </DropdownMenuLabel>
+
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        {isAuthenticated ? (
+          <DropdownMenuGroup>
+            <DropdownMenuItem>My Orders</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLogout()}>
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        ) : (
+          <NavLink>
+            <DropdownMenuItem onClick={() => navigate("/login")}>
+              Login
+            </DropdownMenuItem>
+          </NavLink>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   return (
     <header className="shadow-md shadow-gray-500 py-4 bg-white sticky top-0 z-50 opacity-100">
@@ -71,7 +113,8 @@ const Header = () => {
           >
             <SearchIcon />
           </Button>
-          <UserRound />
+          {/* {renderAccount()} */}
+          {renderUserAccount()}
           <Heart />
           <Button
             onClick={() => {

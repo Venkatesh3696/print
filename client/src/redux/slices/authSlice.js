@@ -1,5 +1,6 @@
 import API from "@/utils/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { act } from "react";
 
 const initialState = {
   user: null,
@@ -47,6 +48,23 @@ export const checkAuth = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await API.post("/api/users/logout");
+
+      console.log("logging out auth ==>>> ", data);
+      return data;
+    } catch (error) {
+      return rejectWithValue({
+        message: error.response?.data?.message || "Authentication failed",
+        status: error.response?.status,
+      });
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -72,21 +90,34 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log("login successful", action.payload);
         state.loading = false;
-        if (action.payload?.status === 401 || !action.payload?.user) {
+        if (action.payload?.success || !action.payload?.user) {
+          state.isAuthenticated = true;
+          state.user = action.payload?.user;
+        } else {
           state.isAuthenticated = false;
           state.user = null;
-        } else {
-          console.log("login successful", action.payload);
-          state.isAuthenticated = true;
-          state.user = action.payload.user;
         }
       })
       .addCase(loginUser.rejected, (state) => {
         state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      // Handle logoutUser
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(logoutUser.rejected, (state) => {
+        state.loading = false;
       })
 
-      // Handle checkAuth
       .addCase(checkAuth.pending, (state) => {
         state.loading = true;
       })
